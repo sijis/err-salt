@@ -1,12 +1,18 @@
 from errbot import BotPlugin, botcmd
 from optparse import OptionParser
 
-import sys
-import pepper
 import json
 import urllib
 import urllib2
 import shlex
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+try:
+    import pepper
+except ImportError as _:
+     logging.exception("Please install 'salt-pepper' python package")
+
 
 class Salt(BotPlugin):
     """Plugin to run salt commands on hosts"""

@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 try:
     import pepper
 except ImportError as _:
-     logging.exception("Please install 'salt-pepper' python package")
+    logging.exception("Please install 'salt-pepper' python package")
 
 
 class Salt(BotPlugin):
@@ -56,7 +56,15 @@ class Salt(BotPlugin):
         action = args.pop(0)
 
         api = pepper.Pepper(self.config['api_url'], debug_http=False)
-        auth = api.login(self.config['api_user'], self.config['api_pass'], self.config['api_auth'])
-        ret = api.local(targets, action, arg=args, kwarg=None, expr_form='pcre')
+        auth = api.login(self.config['api_user'],
+                         self.config['api_pass'],
+                         self.config['api_auth'])
+        ret = api.local(targets,
+                        action,
+                        arg=args,
+                        kwarg=None,
+                        expr_form='pcre')
         results = json.dumps(ret, sort_keys=True, indent=4)
-        self.send(msg.getFrom(), self.paste_code(results), message_type=msg.getType())
+        self.send(msg.getFrom(),
+                  self.paste_code(results),
+                  message_type=msg.getType())

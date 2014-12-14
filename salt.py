@@ -6,12 +6,13 @@ import urllib
 import urllib2
 import shlex
 import logging
-logging.basicConfig(level=logging.DEBUG)
+
+log = logging.getLogger(name='errbot.plugins.Salt')
 
 try:
     import pepper
-except ImportError as _:
-    logging.exception("Please install 'salt-pepper' python package")
+except ImportError:
+    log.error("Please install 'salt-pepper' python package")
 
 
 class Salt(BotPlugin):

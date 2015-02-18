@@ -50,7 +50,11 @@ class Salt(BotPlugin):
 
         if len(args) < 2:
             response = '2 parameters required. see !help salt'
-            self.send(msg.frm, response, message_type=msg.type)
+            self.send(msg.frm,
+                      response,
+                      message_type=msg.type,
+                      in_reply_to=msg,
+                      groupchat_nick_reply=True)
             return
 
         targets = args.pop(0)
@@ -68,4 +72,6 @@ class Salt(BotPlugin):
         results = json.dumps(ret, sort_keys=True, indent=4)
         self.send(msg.frm,
                   self.paste_code(results),
-                  message_type=msg.type)
+                  message_type=msg.type,
+                  in_reply_to=msg,
+                  groupchat_nick_reply=True)

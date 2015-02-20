@@ -2,10 +2,9 @@ from errbot import BotPlugin, botcmd
 from optparse import OptionParser
 
 import json
-import urllib
-import urllib2
 import shlex
 import logging
+import requests
 
 log = logging.getLogger(name='errbot.plugins.Salt')
 
@@ -29,14 +28,16 @@ class Salt(BotPlugin):
         }
         return config
 
-    def paste_code(self, code):
+    def pastebin(self, data):
         ''' Post the output to pastebin '''
-        request = urllib2.Request(
+        clean_data = data
+        url = requests.post(
             self.config['paste_api_url'],
-            urllib.urlencode([('content', code)]),
+            data={
+                'content': clean_data,
+            },
         )
-        response = urllib2.urlopen(request)
-        return response.read()[1:-1]
+        return url.text.strip('"')
 
     @botcmd
     def salt(self, msg, args):
@@ -71,7 +72,7 @@ class Salt(BotPlugin):
                         expr_form='pcre')
         results = json.dumps(ret, sort_keys=True, indent=4)
         self.send(msg.frm,
-                  self.paste_code(results),
+                  self.pastebin(results),
                   message_type=msg.type,
                   in_reply_to=msg,
                   groupchat_nick_reply=True)

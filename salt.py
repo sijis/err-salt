@@ -37,6 +37,7 @@ class Salt(BotPlugin):
                 'content': clean_data,
             },
         )
+        log.debug('url: {}'.format(url))
         return url.text.strip('"')
 
     @botcmd

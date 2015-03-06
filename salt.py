@@ -1,4 +1,4 @@
-from errbot import BotPlugin, botcmd
+from errbot import BotPlugin, botcmd, ShlexArgParser
 from optparse import OptionParser
 
 import json
@@ -71,6 +71,40 @@ class Salt(BotPlugin):
                         arg=args,
                         kwarg=None,
                         expr_form='pcre')
+        results = json.dumps(ret, sort_keys=True, indent=4)
+        self.send(msg.frm,
+                  self.pastebin(results),
+                  message_type=msg.type,
+                  in_reply_to=msg,
+                  groupchat_nick_reply=True)
+
+    @botcmd(split_args_with=ShlexArgParser())
+    def salt_grains(self, msg, args):
+        ''' executes a salt command on systems
+            example:
+            !salt grains 'os:Centos' cmd.run 'cat /etc/hosts'
+        '''
+        if len(args) < 2:
+            response = '2 parameters required. see !help salt'
+            self.send(msg.frm,
+                      response,
+                      message_type=msg.type,
+                      in_reply_to=msg,
+                      groupchat_nick_reply=True)
+            return
+
+        targets = args.pop(0)
+        action = args.pop(0)
+
+        api = pepper.Pepper(self.config['api_url'], debug_http=False)
+        auth = api.login(self.config['api_user'],
+                         self.config['api_pass'],
+                         self.config['api_auth'])
+        ret = api.local(targets,
+                        action,
+                        arg=args,
+                        kwarg=None,
+                        expr_form='grain')
         results = json.dumps(ret, sort_keys=True, indent=4)
         self.send(msg.frm,
                   self.pastebin(results),

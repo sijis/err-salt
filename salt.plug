@@ -2,5 +2,8 @@
 Name = Salt
 Module = salt
 
+[Python]
+Version=2+
+
 [Documentation]
 Description = Salt plugin to execute remote commands
